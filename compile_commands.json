@@ -1,0 +1,57 @@
+[
+  {
+    "directory": "/home/massine/Coding/imzi-engine",
+    "file": "/home/massine/Coding/imzi-engine/src/glad.c",
+    "command": "clang -xc -std=gnu11 -Wall -Wextra -Werror -Iinclude -Ivendors/SDL3/include -Ivendors/SDL3_image/include -Ivendors/cglm/include -DSDL_MAIN_USE_CALLBACKS=1 -c src/glad.c"
+  },
+  {
+    "directory": "/home/massine/Coding/imzi-engine",
+    "file": "/home/massine/Coding/imzi-engine/src/main.c",
+    "command": "clang -xc -std=gnu11 -Wall -Wextra -Werror -Iinclude -Ivendors/SDL3/include -Ivendors/SDL3_image/include -Ivendors/cglm/include -DSDL_MAIN_USE_CALLBACKS=1 -c src/main.c"
+  },
+  {
+    "directory": "/home/massine/Coding/imzi-engine",
+    "file": "/home/massine/Coding/imzi-engine/src/core/imzi.c",
+    "command": "clang -xc -std=gnu11 -Wall -Wextra -Werror -Iinclude -Ivendors/SDL3/include -Ivendors/SDL3_image/include -Ivendors/cglm/include -DSDL_MAIN_USE_CALLBACKS=1 -c src/core/imzi.c"
+  },
+  {
+    "directory": "/home/massine/Coding/imzi-engine",
+    "file": "/home/massine/Coding/imzi-engine/src/game/scenes/test_scene.c",
+    "command": "clang -xc -std=gnu11 -Wall -Wextra -Werror -Iinclude -Ivendors/SDL3/include -Ivendors/SDL3_image/include -Ivendors/cglm/include -DSDL_MAIN_USE_CALLBACKS=1 -c src/game/scenes/test_scene.c"
+  },
+  {
+    "directory": "/home/massine/Coding/imzi-engine",
+    "file": "/home/massine/Coding/imzi-engine/src/game/scenes/entities/test_entities.c",
+    "command": "clang -xc -std=gnu11 -Wall -Wextra -Werror -Iinclude -Ivendors/SDL3/include -Ivendors/SDL3_image/include -Ivendors/cglm/include -DSDL_MAIN_USE_CALLBACKS=1 -c src/game/scenes/entities/test_entities.c"
+  },
+  {
+    "directory": "/home/massine/Coding/imzi-engine",
+    "file": "/home/massine/Coding/imzi-engine/src/engine/scene.c",
+    "command": "clang -xc -std=gnu11 -Wall -Wextra -Werror -Iinclude -Ivendors/SDL3/include -Ivendors/SDL3_image/include -Ivendors/cglm/include -DSDL_MAIN_USE_CALLBACKS=1 -c src/engine/scene.c"
+  },
+  {
+    "directory": "/home/massine/Coding/imzi-engine",
+    "file": "/home/massine/Coding/imzi-engine/src/engine/engine.c",
+    "command": "clang -xc -std=gnu11 -Wall -Wextra -Werror -Iinclude -Ivendors/SDL3/include -Ivendors/SDL3_image/include -Ivendors/cglm/include -DSDL_MAIN_USE_CALLBACKS=1 -c src/engine/engine.c"
+  },
+  {
+    "directory": "/home/massine/Coding/imzi-engine",
+    "file": "/home/massine/Coding/imzi-engine/src/engine/managers/asset_manager_2d.c",
+    "command": "clang -xc -std=gnu11 -Wall -Wextra -Werror -Iinclude -Ivendors/SDL3/include -Ivendors/SDL3_image/include -Ivendors/cglm/include -DSDL_MAIN_USE_CALLBACKS=1 -c src/engine/managers/asset_manager_2d.c"
+  },
+  {
+    "directory": "/home/massine/Coding/imzi-engine",
+    "file": "/home/massine/Coding/imzi-engine/src/engine/visuals/sprite_sheet.c",
+    "command": "clang -xc -std=gnu11 -Wall -Wextra -Werror -Iinclude -Ivendors/SDL3/include -Ivendors/SDL3_image/include -Ivendors/cglm/include -DSDL_MAIN_USE_CALLBACKS=1 -c src/engine/visuals/sprite_sheet.c"
+  },
+  {
+    "directory": "/home/massine/Coding/imzi-engine",
+    "file": "/home/massine/Coding/imzi-engine/src/engine/visuals/tilemap.c",
+    "command": "clang -xc -std=gnu11 -Wall -Wextra -Werror -Iinclude -Ivendors/SDL3/include -Ivendors/SDL3_image/include -Ivendors/cglm/include -DSDL_MAIN_USE_CALLBACKS=1 -c src/engine/visuals/tilemap.c"
+  },
+  {
+    "directory": "/home/massine/Coding/imzi-engine",
+    "file": "/home/massine/Coding/imzi-engine/src/engine/players/animation_player.c",
+    "command": "clang -xc -std=gnu11 -Wall -Wextra -Werror -Iinclude -Ivendors/SDL3/include -Ivendors/SDL3_image/include -Ivendors/cglm/include -DSDL_MAIN_USE_CALLBACKS=1 -c src/engine/players/animation_player.c"
+  }
+]

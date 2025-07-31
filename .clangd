@@ -1,0 +1,11 @@
+CompileFlags:
+  Add: 
+    - -xc
+    - -I./include
+    - -I./vendors/SDL3/include
+    - -I./vendors/SDL3_image/include
+    - -I./vendors/cglm/include
+    - -std=gnu11
+    - -Wall
+    - -Wextra
+    - -DSDL_MAIN_USE_CALLBACKS=1

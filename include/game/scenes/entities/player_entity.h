@@ -13,8 +13,8 @@ typedef struct {
   vec2 position;
   vec2 velocity;
   vec2 acceleration;
-} TestEntityData;
+} PlayerEntityData;
 
-Entity SetupTestEntity(Imzi_Engine_Ptr engine);
+void SetupPlayerEntity(Imzi_Engine_Ptr engine, Entity *entity);
 
 #endif

@@ -13,7 +13,7 @@ typedef struct {
 
 } ProjectileEntity;
 
-Entity SetupProjectileEntity(uint32_t sprite_index, int32_t lifetime,
-                             vec2 velocity, vec2 position);
+void SetupProjectileEntity(uint32_t sprite_index, int32_t lifetime,
+                           vec2 velocity, vec2 position, Entity *entity);
 
 #endif // PROJECTILE_ENTITY_H

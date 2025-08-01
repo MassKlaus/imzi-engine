@@ -8,6 +8,6 @@ typedef struct BackgroundEntity {
   int32_t sprite_index;
 } BackgroundEntity;
 
-Entity SetupBackgroundEntity(int32_t sprite_index);
+void SetupBackgroundEntity(int32_t sprite_index, Entity *entity);
 
 #endif // !BACKGROUND_ENTITY_H

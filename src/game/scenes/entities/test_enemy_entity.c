@@ -51,8 +51,32 @@ void UpdateTestEnemyEntity(Imzi_Engine_Ptr engine, Entity *entity,
   float direction =
       entity_data->position[0] > player_entity_data->position[0] ? -1 : 1;
 
+  if (SDL_abs((int)(entity_data->position[0] -
+                    player_entity_data->position[0])) < 20) {
+    direction = 0;
+  }
+
   entity_data->velocity[0] = direction * SPEED;
   entity_data->position[0] += entity_data->velocity[0] * frame_time;
+
+  if (direction > 0) {
+    // if (index != 0 && index != 6)
+    // {
+    Imzi_StartAnimationPlayerByName(
+        &engine->renderer, &entity_data->animation_player, SLIME_SPRINT_NAME);
+    entity_data->animation_player.h_flip = false;
+    // }
+  } else if (direction < 0) {
+    // if (index != 0 && index != 6)
+    // {
+    Imzi_StartAnimationPlayerByName(
+        &engine->renderer, &entity_data->animation_player, SLIME_SPRINT_NAME);
+    entity_data->animation_player.h_flip = true;
+  } else {
+    Imzi_StartAnimationPlayerByName(
+        &engine->renderer, &entity_data->animation_player, SLIME_STANDING_NAME);
+    entity_data->velocity[0] = 0;
+  }
 }
 
 void SetupTestEnemyEntity(Imzi_Engine_Ptr engine, Entity *entity,

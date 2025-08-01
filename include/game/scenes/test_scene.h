@@ -3,7 +3,6 @@
 
 #include "engine/scene.h"
 
-
-Scene* SetupTest1Scene(Imzi_Engine_Ptr engine);
+void SetupTest1Scene(Imzi_Engine_Ptr engine, Scene *scene);
 
 #endif

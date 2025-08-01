@@ -26,13 +26,17 @@ void Imzi_RenderScene(Imzi_Engine_Ptr engine, Scene *scene, double frame_time) {
   qsort(scene->entities, scene->entity_count, sizeof(Entity),
         compare_render_layer);
   for (int32_t i = 0; i < scene->entity_count; i++) {
+    if (scene->entities[i].id == 0) {
+      continue;
+    }
+
     scene->entities[i].renderPtr(engine, scene->entities + i, frame_time);
   }
 }
 
 void Imzi_UpdateScene(Imzi_Engine_Ptr engine, Scene *scene, double frame_time) {
   for (int32_t i = 0; i < scene->entity_count; i++) {
-    if (scene->entities[i].marked_for_delete) {
+    if (scene->entities[i].id == 0) {
       continue;
     }
 
@@ -42,16 +46,30 @@ void Imzi_UpdateScene(Imzi_Engine_Ptr engine, Scene *scene, double frame_time) {
   Imzi_RemoveMarkedEntitiesFromScene(scene);
 }
 
-bool Imzi_AddEntityToScene(Scene *scene, Entity entity) {
-  if (scene->entity_count >= MAX_SCENE_ENTITIES) {
-    return false;
+Entity *Imzi_FindEntityInScene(Scene *scene, uint32_t entity_id) {
+  if (scene->entity_count == 0) {
+    return NULL;
   }
 
-  entity.id = scene->entity_count;
-  scene->entities[scene->entity_count] = entity;
-  scene->entity_count++;
+  for (int i = 0; i < scene->entity_count; i++) {
+    if (scene->entities[i].id == entity_id) {
+      return scene->entities + i;
+    }
+  }
 
-  return true;
+  return NULL;
+}
+
+Entity *Imzi_AddEntityToScene(Scene *scene) {
+  if (scene->entity_count >= MAX_SCENE_ENTITIES) {
+    return NULL;
+  }
+
+  Entity *entity = scene->entities + scene->entity_count;
+  scene->entity_count++;
+  entity->id = scene->entity_count;
+
+  return entity;
 }
 
 /// Avoid, prefer to simply mark the component as deleted and skip when about to
@@ -74,7 +92,7 @@ bool Imzi_RemoveEntityFromScene(Scene *scene, uint32_t entity_id) {
     return false;
   }
 
-  scene->entities[index].marked_for_delete = true;
+  scene->entities[index].id = 0;
 
   return true;
 }
@@ -90,7 +108,7 @@ bool Imzi_RemoveMarkedEntitiesFromScene(Scene *scene) {
 
   while (read_index < scene->entity_count) {
     Entity entity = scene->entities[read_index];
-    if (entity.marked_for_delete) {
+    if (entity.id == 0) {
       SDL_free(entity.data);
       read_index++;
       continue;

@@ -21,8 +21,8 @@
   },
   {
     "directory": "/home/massine/Coding/imzi-engine",
-    "file": "/home/massine/Coding/imzi-engine/src/game/scenes/entities/test_entities.c",
-    "command": "clang -xc -std=gnu11 -Wall -Wextra -Werror -Iinclude -Ivendors/SDL3/include -Ivendors/SDL3_image/include -Ivendors/cglm/include -DSDL_MAIN_USE_CALLBACKS=1 -c src/game/scenes/entities/test_entities.c"
+    "file": "/home/massine/Coding/imzi-engine/src/game/scenes/entities/player_entity.c",
+    "command": "clang -xc -std=gnu11 -Wall -Wextra -Werror -Iinclude -Ivendors/SDL3/include -Ivendors/SDL3_image/include -Ivendors/cglm/include -DSDL_MAIN_USE_CALLBACKS=1 -c src/game/scenes/entities/player_entity.c"
   },
   {
     "directory": "/home/massine/Coding/imzi-engine",

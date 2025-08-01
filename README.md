@@ -16,3 +16,14 @@ Game is where the user would use the engine layer to build their game using the 
 Core must only ever use vendor libraries.
 Engine must only ever use Core and vendor libraries.
 Game must only ever use vendors and Engine without reaching for Core.
+
+
+# Layers
+
+Platform Layer - Basically SDL
+
+Engine
+- Renderer
+- - Asset Create, Destroy, Load, Unload
+- - Abstracting Animation Systems, Fix BackToFront Rendering
+- - 2DCamera should exist in a 3D world? (Unsure)

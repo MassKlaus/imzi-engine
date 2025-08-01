@@ -23,12 +23,12 @@ int32_t Imzi_SetupTileInTileMap(TileMap *map, int32_t sprite_index,
   return map->tile_count - 1;
 }
 
-int32_t Imzi_SetupTileInTileMapFromPath(Imzi_Engine_Ptr engine,
+int32_t Imzi_SetupTileInTileMapFromPath(Imzi_Context_Ptr ctx,
                                         AssetManager2D *manager, TileMap *map,
                                         const char *path, const char *name,
                                         SDL_FRect *area, vec2 position) {
-  int32_t sprite_index = Imzi_AssetManager2DCreateSpriteFromPath(
-      engine, manager, path, name, area);
+  int32_t sprite_index =
+      Imzi_AssetManager2DCreateSpriteFromPath(ctx, manager, path, name, area);
 
   if (sprite_index == -1) {
     return -1;
@@ -48,10 +48,10 @@ int32_t Imzi_SetupTileInTileMapFromName(AssetManager2D *manager, TileMap *map,
   return Imzi_SetupTileInTileMap(map, sprite_index, position);
 }
 
-void Imzi_RenderTileMap(Imzi_Engine_Ptr engine, AssetManager2D *manager,
+void Imzi_RenderTileMap(Imzi_Context_Ptr ctx, AssetManager2D *manager,
                         TileMap *map) {
   for (int32_t i = 0; i < map->tile_count; i++) {
     Tile tile = map->tiles[i];
-    Imzi_RenderSprite(engine, manager, tile.sprite_index, tile.position);
+    Imzi_RenderSprite(ctx, manager, tile.sprite_index, tile.position);
   }
 }

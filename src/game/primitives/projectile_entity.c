@@ -3,7 +3,6 @@
 #include "cglm/vec2.h"
 #include "engine/entity.h"
 #include "engine/managers/asset_manager_2d.h"
-#include "game/game.h"
 #include <stdbool.h>
 #include <stdlib.h>
 
@@ -17,7 +16,7 @@ void UpdateProjectileEntity(Imzi_Engine_Ptr engine, Entity *entity,
   if (data->elapsed_time >= data->lifetime) {
     // NOTE: Current implementation assures us that this would be deleted after
     // all entities have been processed sucessfully
-    entity->marked_for_delete = true;
+    entity->id = 0;
   }
 
   data->position[0] += data->velocity[0] * frame_time;
@@ -27,13 +26,13 @@ void UpdateProjectileEntity(Imzi_Engine_Ptr engine, Entity *entity,
 void RenderProjectileEntity(Imzi_Engine_Ptr engine, Entity *entity,
                             double frame_time) {
   (void)frame_time;
-  Game *game = (Game *)engine->game_data;
   ProjectileEntity *data = (ProjectileEntity *)entity->data;
-  Imzi_RenderSprite(engine, game->manager, data->sprite_index, data->position);
+  Imzi_RenderSprite(&engine->ctx, &engine->manager, data->sprite_index,
+                    data->position);
 }
 
-Entity SetupProjectileEntity(uint32_t sprite_index, int32_t lifetime,
-                             vec2 velocity, vec2 position) {
+void SetupProjectileEntity(uint32_t sprite_index, int32_t lifetime,
+                           vec2 velocity, vec2 position, Entity *entity) {
   ProjectileEntity *data = malloc(sizeof(ProjectileEntity));
   SDL_memset(data, 0, sizeof(ProjectileEntity));
 
@@ -42,6 +41,8 @@ Entity SetupProjectileEntity(uint32_t sprite_index, int32_t lifetime,
   glm_vec2_copy(velocity, data->velocity);
   glm_vec2_copy(position, data->position);
 
-  return (Entity){data, UpdateProjectileEntity, RenderProjectileEntity, 2, 0,
-                  false};
+  entity->data = data;
+  entity->renderPtr = RenderProjectileEntity;
+  entity->updatePtr = UpdateProjectileEntity;
+  entity->render_layer = 1;
 }

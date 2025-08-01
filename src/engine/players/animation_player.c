@@ -1,13 +1,11 @@
 #include <SDL3/SDL.h>
 #include <inttypes.h>
 
+#include "engine/managers/asset_manager_2d.h"
 #include "engine/players/animation_player.h"
-#include "engine/visuals/render.h"
 
-AnimationPlayer Imzi_SetupAnimationPlayer(AssetManager2D *manager,
-                                          int32_t animation_index) {
+AnimationPlayer Imzi_SetupAnimationPlayer(int32_t animation_index) {
   AnimationPlayer player = {0};
-  player.manager = manager;
   player.animation_index = animation_index;
   player.elapsed_frame_time = 0;
   player.h_flip = false;
@@ -17,10 +15,11 @@ AnimationPlayer Imzi_SetupAnimationPlayer(AssetManager2D *manager,
   return player;
 }
 
-void Imzi_StartAnimationPlayerByName(AnimationPlayer *player,
+void Imzi_StartAnimationPlayerByName(AssetManager2D *manager,
+                                     AnimationPlayer *player,
                                      const char *name) {
   int32_t animation_index =
-      Imzi_AssetManager2DGetAnimationByName(player->manager, name);
+      Imzi_AssetManager2DGetAnimationByName(manager, name);
   Imzi_StartAnimationPlayer(player, animation_index);
 }
 
@@ -37,14 +36,12 @@ void Imzi_StartAnimationPlayer(AnimationPlayer *player,
   player->paused = false;
 }
 
-void Imzi_AnimationPlayerRender(Imzi_Engine_Ptr engine, AnimationPlayer *player,
-                                vec2 position) {
-  AssetManager2D *manager = player->manager;
+void Imzi_AnimationPlayerRender(Imzi_Context_Ptr ctx, AssetManager2D *manager,
+                                AnimationPlayer *player, vec2 position) {
+  Animation *animation = manager->animations + player->animation_index;
+  SpriteSheet *sheet = manager->sprite_sheets + animation->sprite_sheet_index;
 
-  Animation *animation = manager->animations[player->animation_index];
-  SpriteSheet *sheet = manager->sprite_sheets[animation->sprite_sheet_index];
-
-  int32_t frame = Imzi_GetCurrentAnimationFrame(player);
+  int32_t frame = Imzi_GetCurrentAnimationFrame(manager, player);
 
   SDL_FRect src = {animation->area.x + animation->frame_w * frame,
                    animation->area.y, animation->frame_w, animation->frame_h};
@@ -60,7 +57,7 @@ void Imzi_AnimationPlayerRender(Imzi_Engine_Ptr engine, AnimationPlayer *player,
   if (player->v_flip)
     flip |= SDL_FLIP_VERTICAL;
 
-  Imzi_RenderPartialSpriteSheetEx(engine, sheet, &src, &dest, flip);
+  Imzi_RenderPartialSpriteSheetEx(ctx, sheet, &src, &dest, flip);
 }
 
 void Imzi_UpdateAnimationPlayer(AnimationPlayer *player, double delta_time) {
@@ -68,18 +65,12 @@ void Imzi_UpdateAnimationPlayer(AnimationPlayer *player, double delta_time) {
     return;
   }
 
-  Animation *animation = player->manager->animations[player->animation_index];
-  if (animation == NULL) {
-    return;
-  }
-
   player->elapsed_frame_time += delta_time;
 }
 
-int32_t Imzi_GetCurrentAnimationFrame(AnimationPlayer *player) {
-  AssetManager2D *manager = player->manager;
-
-  Animation *animation = manager->animations[player->animation_index];
+int32_t Imzi_GetCurrentAnimationFrame(AssetManager2D *manager,
+                                      AnimationPlayer *player) {
+  Animation *animation = manager->animations + player->animation_index;
 
   int32_t frame = (player->elapsed_frame_time / animation->frame_time);
 

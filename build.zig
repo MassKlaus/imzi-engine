@@ -61,8 +61,18 @@ pub fn build(b: *std.Build) !void {
     main.addCSourceFiles(.{
         .root = b.path("src"),
         .files = c_files.items,
-        .flags = &[_][]const u8{ "-std=gnu11", "-Wall", "-Wextra", "-Werror" },
+        .flags = &[_][]const u8{ "-std=gnu11", "-Wall", "-Wextra", "-Werror", 
+            // Sanitizers
+            "-fsanitize=address,undefined,leak",
+            "-fno-omit-frame-pointer",
+            "-fno-optimize-sibling-calls",
+        },
     });
+
+    main.sanitize_c = true;
+
+    main.linkSystemLibrary("asan", .{});      // AddressSanitizer
+    main.linkSystemLibrary("ubsan", .{});
 
     main.addIncludePath(b.path("include"));
     main.addIncludePath(b.path("vendors/SDL3/include"));
@@ -83,6 +93,7 @@ pub fn build(b: *std.Build) !void {
         .name = "imzi_engine",
         .root_module = main,
     });
+
 
     if (target.result.os.tag == .windows) {
         b.install_path = "./zig-out/windows/";

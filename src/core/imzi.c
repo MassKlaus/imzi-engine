@@ -1,5 +1,5 @@
+#include "core/imzi.h"
 #include <SDL3_image/SDL_image.h>
-#include <core/imzi.h>
 #include <game/scenes/test_scene.h>
 #include <stdlib.h>
 

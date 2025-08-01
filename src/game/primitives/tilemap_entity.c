@@ -11,7 +11,7 @@ void RenderTileMapEntity(Imzi_Engine_Ptr engine, Entity *entity,
   TileMapEntity *entity_data = (TileMapEntity *)entity->data;
 
   assert(entity_data->tilemap != NULL);
-  Imzi_RenderTileMap(&engine->ctx, &engine->manager, entity_data->tilemap);
+  Imzi_TileMapRender(&engine->renderer, entity_data->tilemap);
 }
 
 void UpdateTileMapEntity(Imzi_Engine_Ptr engine, Entity *entity,

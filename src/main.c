@@ -1,3 +1,4 @@
+#include "SDL3/SDL_render.h"
 #include "SDL3/SDL_stdinc.h"
 #include "engine/engine.h"
 #include "engine/scene.h"
@@ -18,7 +19,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]) {
   engine->game_data = game;
   *appstate = engine;
 
-  SDL_SetRenderVSync(engine->ctx.renderer, 1);
+  SDL_SetRenderVSync(engine->renderer.ctx.renderContext, 1);
   SetupTest1Scene(engine, &game->active_scene);
 
   return SDL_APP_CONTINUE;
@@ -44,23 +45,24 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 
   double frame_time = (engine->new_time - engine->old_time) / (1000000000.0);
 
-  if (Imzi_ShouldClose(&engine->ctx)) {
+  if (Imzi_ShouldClose(&engine->renderer.ctx)) {
     return SDL_APP_SUCCESS;
   }
 
-  SDL_RenderClear(engine->ctx.renderer); /* code */
+  SDL_SetRenderDrawColorFloat(engine->renderer.ctx.renderContext, 0, 0, 0, 0);
+  SDL_RenderClear(engine->renderer.ctx.renderContext); /* code */
 
   Imzi_UpdateScene(engine, &game->active_scene, frame_time);
   Imzi_RenderScene(engine, &game->active_scene, frame_time);
 
-  SDL_RenderPresent(engine->ctx.renderer);
+  SDL_RenderPresent(engine->renderer.ctx.renderContext);
 
   return SDL_APP_CONTINUE;
 }
 
 void SDL_AppQuit(void *appstate, SDL_AppResult result) {
   Imzi_Engine_Ptr engine = (Imzi_Engine_Ptr)appstate;
-  Imzi_Deinit(&engine->ctx);
+  Imzi_DeinitEngine(engine);
 
   if (result == SDL_APP_FAILURE) {
     SDL_Log("FAILED BAD");

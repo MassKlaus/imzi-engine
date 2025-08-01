@@ -15,12 +15,4 @@ void Imzi_LoadSpriteSheet(Imzi_Context_Ptr ctx, const char *name,
 
 void Imzi_UnloadSpriteSheet(SpriteSheet *sprite_sheet);
 
-void Imzi_RenderPartialSpriteSheet(Imzi_Context_Ptr ctx,
-                                   SpriteSheet *sprite_sheet, SDL_FRect *src,
-                                   SDL_FRect *dest);
-
-void Imzi_RenderPartialSpriteSheetEx(Imzi_Context_Ptr ctx,
-                                     SpriteSheet *sprite_sheet, SDL_FRect *src,
-                                     SDL_FRect *dest, SDL_FlipMode flip);
-
 #endif

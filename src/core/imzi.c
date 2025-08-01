@@ -5,7 +5,7 @@
 
 Imzi_Context_Ptr GlobalContext;
 
-void Imzi_Init(Imzi_Context_Ptr ctx, const char *title, int width, int height) {
+void Imzi_Init(const char *title, int width, int height, Imzi_Context_Ptr ctx) {
   GlobalContext = ctx;
   ctx->x = 0;
   ctx->y = 0;
@@ -22,7 +22,7 @@ void Imzi_Init(Imzi_Context_Ptr ctx, const char *title, int width, int height) {
 
   const bool succeeded = SDL_CreateWindowAndRenderer(
       title, ctx->width, ctx->height, SDL_WINDOW_BORDERLESS, &ctx->window,
-      &ctx->renderer);
+      &ctx->renderContext);
 
   if (!succeeded) {
     SDL_Log("Window could not be created! SDL error: %s\n", SDL_GetError());
@@ -31,8 +31,8 @@ void Imzi_Init(Imzi_Context_Ptr ctx, const char *title, int width, int height) {
 }
 
 void Imzi_Deinit(Imzi_Context_Ptr ctx) {
-  if (ctx->renderer)
-    SDL_DestroyRenderer(ctx->renderer);
+  if (ctx->renderContext)
+    SDL_DestroyRenderer(ctx->renderContext);
 
   if (ctx->window)
     SDL_DestroyWindow(ctx->window);

@@ -20,13 +20,12 @@
 void RenderPlayerEntity(Imzi_Engine_Ptr engine, Entity *entity,
                         double frame_time) {
   PlayerEntityData *entity_data = (PlayerEntityData *)entity->data;
-  SDL_SetRenderDrawColor(engine->ctx.renderer, 255, 0, 0, 255);
+  SDL_SetRenderDrawColor(engine->renderer.ctx.renderContext, 255, 0, 0, 255);
   Imzi_UpdateAnimationPlayer(&entity_data->animation_player, frame_time);
-  Imzi_AnimationPlayerRender(&engine->ctx, &engine->manager,
-                             &entity_data->animation_player,
+  Imzi_AnimationPlayerRender(&engine->renderer, &entity_data->animation_player,
                              entity_data->position);
-  SDL_RenderDebugTextFormat(engine->ctx.renderer, 10, 10, "FPS: %lf",
-                            1 / frame_time);
+  SDL_RenderDebugTextFormat(engine->renderer.ctx.renderContext, 10, 10,
+                            "FPS: %lf", 1 / frame_time);
 }
 
 #define PIXELS_PER_METER 100.0
@@ -43,8 +42,7 @@ void UpdatePlayerEntity(Imzi_Engine_Ptr engine, Entity *entity,
   const bool *state = SDL_GetKeyboardState(NULL);
 
   entity_data->animation_player.animation_index =
-      Imzi_AssetManager2DGetAnimationByName(&engine->manager,
-                                            SLIME_SPRINT_NAME);
+      Imzi_RendererGetAnimationByName(&engine->renderer, SLIME_SPRINT_NAME);
 
   entity_data->acceleration[1] = GRAVITY;
 
@@ -63,7 +61,7 @@ void UpdatePlayerEntity(Imzi_Engine_Ptr engine, Entity *entity,
     // if (index != 0 && index != 6)
     // {
     Imzi_StartAnimationPlayerByName(
-        &engine->manager, &entity_data->animation_player, SLIME_SPRINT_NAME);
+        &engine->renderer, &entity_data->animation_player, SLIME_SPRINT_NAME);
     entity_data->velocity[0] = SPEED;
     entity_data->animation_player.h_flip = false;
     // }
@@ -71,33 +69,33 @@ void UpdatePlayerEntity(Imzi_Engine_Ptr engine, Entity *entity,
     // if (index != 0 && index != 6)
     // {
     Imzi_StartAnimationPlayerByName(
-        &engine->manager, &entity_data->animation_player, SLIME_SPRINT_NAME);
+        &engine->renderer, &entity_data->animation_player, SLIME_SPRINT_NAME);
     entity_data->velocity[0] = -SPEED;
     entity_data->animation_player.h_flip = true;
   } else {
     Imzi_StartAnimationPlayerByName(
-        &engine->manager, &entity_data->animation_player, SLIME_STANDING_NAME);
+        &engine->renderer, &entity_data->animation_player, SLIME_STANDING_NAME);
     entity_data->velocity[0] = 0;
   }
 
   if (state[SDL_SCANCODE_RIGHT]) {
     // if (index != 0 && index != 6)
     // {
-    engine->render_offset[0] -= SPEED * frame_time;
+    engine->renderer.render_offset[0] += SPEED * frame_time;
   } else if (state[SDL_SCANCODE_LEFT]) {
     // if (index != 0 && index != 6)
     // {
-    engine->render_offset[0] += SPEED * frame_time;
+    engine->renderer.render_offset[0] -= SPEED * frame_time;
   }
 
   if (state[SDL_SCANCODE_UP]) {
     // if (index != 0 && index != 6)
     // {
-    engine->render_offset[1] += SPEED * frame_time;
+    engine->renderer.render_offset[1] -= SPEED * frame_time;
   } else if (state[SDL_SCANCODE_DOWN]) {
     // if (index != 0 && index != 6)
     // {
-    engine->render_offset[1] -= SPEED * frame_time;
+    engine->renderer.render_offset[1] += SPEED * frame_time;
   }
 
   entity_data->velocity[0] += entity_data->acceleration[0] * frame_time;
@@ -106,8 +104,8 @@ void UpdatePlayerEntity(Imzi_Engine_Ptr engine, Entity *entity,
   entity_data->position[0] += entity_data->velocity[0] * frame_time;
   entity_data->position[1] += entity_data->velocity[1] * frame_time;
 
-  if (entity_data->position[1] > engine->ctx.height - 128) {
-    entity_data->position[1] = engine->ctx.height - 128;
+  if (entity_data->position[1] > engine->renderer.ctx.height - 128) {
+    entity_data->position[1] = engine->renderer.ctx.height - 128;
     entity_data->acceleration[1] = 0;
     entity_data->velocity[1] = 0;
     grounded = true;
@@ -118,25 +116,22 @@ void UpdatePlayerEntity(Imzi_Engine_Ptr engine, Entity *entity,
   slime_center[1] = entity_data->position[1] + 32;
 
   float vertical_lag_range = 64;
-  float camera_target =
-      (engine->render_offset[0] + (engine->ctx.width / 2.0) - slime_center[0]);
 
-  if (camera_target > vertical_lag_range ||
-      camera_target < -vertical_lag_range) {
+  float camera_x =
+      engine->renderer.render_offset[0] + (engine->renderer.ctx.width / 2.0);
 
-    camera_target =
-        SDL_clamp(camera_target, -vertical_lag_range, vertical_lag_range);
+  float camera_to_slime = slime_center[0] - camera_x;
 
-    engine->render_offset[0] =
-        SDL_ceil(slime_center[0] - (engine->ctx.width / 2.0) + camera_target);
-    engine->render_offset[1] =
-        SDL_ceil(slime_center[1] - (engine->ctx.height / 2.0));
+  if (camera_to_slime > vertical_lag_range) {
+    engine->renderer.render_offset[0] += camera_to_slime - vertical_lag_range;
+  } else if (camera_to_slime < -vertical_lag_range) {
+    engine->renderer.render_offset[0] += camera_to_slime + vertical_lag_range;
   }
 
   if (state[SDL_SCANCODE_E]) {
 
-    uint32_t projectile_sprite_index = Imzi_AssetManager2DGetSpriteByName(
-        &engine->manager, SLIME_PROJECTILE_NAME);
+    uint32_t projectile_sprite_index =
+        Imzi_RendererGetSpriteByName(&engine->renderer, SLIME_PROJECTILE_NAME);
 
     float direction = entity_data->animation_player.h_flip ? -1 : 1;
     vec2 position;
@@ -152,16 +147,17 @@ void UpdatePlayerEntity(Imzi_Engine_Ptr engine, Entity *entity,
 }
 
 void SetupPlayerEntity(Imzi_Engine_Ptr engine, Entity *entity) {
-  int32_t still_animation_index = Imzi_AssetManager2DCreateAnimationFromPath(
-      &engine->ctx, &engine->manager, "assets/slime.png", SLIME_STANDING_NAME,
+  int32_t still_animation_index = Imzi_RendererCreateAnimationFromPath(
+      &engine->renderer, "assets/slime.png", SLIME_STANDING_NAME,
       &(SDL_FRect){0, 0, 64, 64}, 64, 64, 1, 1, false);
-  Imzi_AssetManager2DCreateAnimationFromPath(
-      &engine->ctx, &engine->manager, "assets/sprint_slime_sprint.png",
-      SLIME_SPRINT_NAME, &(SDL_FRect){0, 0, 64, 64}, 64, 64, 5, 0.1, true);
 
-  Imzi_AssetManager2DCreateSpriteFromPath(
-      &engine->ctx, &engine->manager, "assets/prejectile.png",
-      SLIME_PROJECTILE_NAME, &(SDL_FRect){0, 0, 32, 32});
+  Imzi_RendererCreateAnimationFromPath(
+      &engine->renderer, "assets/sprint_slime_sprint.png", SLIME_SPRINT_NAME,
+      &(SDL_FRect){0, 0, 64, 64}, 64, 64, 5, 0.1, true);
+
+  Imzi_RendererCreateSpriteFromPath(&engine->renderer, "assets/prejectile.png",
+                                    SLIME_PROJECTILE_NAME,
+                                    &(SDL_FRect){0, 0, 32, 32});
 
   PlayerEntityData *data = SDL_malloc(sizeof(PlayerEntityData));
   SDL_memset(data, 0, sizeof(PlayerEntityData));
@@ -172,7 +168,7 @@ void SetupPlayerEntity(Imzi_Engine_Ptr engine, Entity *entity) {
   glm_vec2_zero(data->velocity);
 
   data->position[0] = 10;
-  data->position[1] = engine->ctx.height - 128;
+  data->position[1] = engine->renderer.ctx.height - 128;
 
   entity->data = data;
   entity->render_layer = 1;

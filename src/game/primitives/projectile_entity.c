@@ -2,7 +2,6 @@
 #include "SDL3/SDL_stdinc.h"
 #include "cglm/vec2.h"
 #include "engine/entity.h"
-#include "engine/managers/asset_manager_2d.h"
 #include <stdbool.h>
 #include <stdlib.h>
 
@@ -27,8 +26,8 @@ void RenderProjectileEntity(Imzi_Engine_Ptr engine, Entity *entity,
                             double frame_time) {
   (void)frame_time;
   ProjectileEntity *data = (ProjectileEntity *)entity->data;
-  Imzi_RenderSprite(&engine->ctx, &engine->manager, data->sprite_index,
-                    data->position);
+  Imzi_RendererDrawSprite(&engine->renderer, data->sprite_index,
+                          data->position);
 }
 
 void SetupProjectileEntity(uint32_t sprite_index, int32_t lifetime,

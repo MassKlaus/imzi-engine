@@ -61,15 +61,4 @@ int32_t Imzi_AssetManager2DCreateAnimation(AssetManager2D *manager,
 int32_t Imzi_AssetManager2DGetAnimationByName(AssetManager2D *manager,
                                               const char *name);
 
-void Imzi_RenderSprite(Imzi_Context_Ptr ctx, AssetManager2D *manager,
-                       int32_t sprite_index, vec2 position);
-
-void Imzi_RenderSpriteTo(Imzi_Context_Ptr ctx, AssetManager2D *manager,
-                         int32_t sprite_index, SDL_FRect *area);
-
-void Imzi_RenderSpriteStatic(Imzi_Context_Ptr ctx, AssetManager2D *manager,
-                             int32_t sprite_index, vec2 position);
-
-void Imzi_RenderSpriteToStatic(Imzi_Context_Ptr ctx, AssetManager2D *manager,
-                               int32_t sprite_index, SDL_FRect *area);
 #endif

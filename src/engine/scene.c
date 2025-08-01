@@ -1,6 +1,5 @@
 
 #include "engine/scene.h"
-#include "SDL3/SDL_log.h"
 #include "SDL3/SDL_stdinc.h"
 #include "engine/engine.h"
 #include "engine/entity.h"

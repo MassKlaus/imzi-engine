@@ -16,21 +16,21 @@ void SetupTest1Scene(Imzi_Engine_Ptr engine, Scene *scene) {
   Entity *enemy_entity = Imzi_AddEntityToScene(scene);
   SetupTestEnemyEntity(engine, enemy_entity, player_entity->id);
 
-  int32_t background = Imzi_AssetManager2DCreateSpriteFromPath(
-      &engine->ctx, &engine->manager, "assets/temp.png", "background", NULL);
+  int32_t background = Imzi_RendererCreateSpriteFromPath(
+      &engine->renderer, "assets/temp.png", "background", NULL);
 
   Entity *background_entity = Imzi_AddEntityToScene(scene);
   SetupBackgroundEntity(background, background_entity);
 
   TileMap *tilemap = Imzi_SetupTileMap();
 
-  int32_t grass_index = Imzi_AssetManager2DCreateSpriteFromPath(
-      &engine->ctx, &engine->manager, "assets/tilemap.png", "grass",
-      &(SDL_FRect){128, 64, 64, 64});
+  int32_t grass_index =
+      Imzi_RendererCreateSpriteFromPath(&engine->renderer, "assets/tilemap.png",
+                                        "grass", &(SDL_FRect){128, 64, 64, 64});
 
-  for (int32_t width = 0; width < engine->ctx.width; width += 64) {
+  for (int32_t width = 0; width < engine->renderer.ctx.width; width += 64) {
     Imzi_SetupTileInTileMap(tilemap, grass_index,
-                            (vec2){width, engine->ctx.height - 64});
+                            (vec2){width, engine->renderer.ctx.height - 64});
   }
 
   Entity *tilemap_entity = Imzi_AddEntityToScene(scene);

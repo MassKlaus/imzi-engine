@@ -1,15 +1,13 @@
 #include "game/scenes/entities/test_enemy_entity.h"
 #include "SDL3/SDL_log.h"
-#include "SDL3/SDL_scancode.h"
 #include "SDL3/SDL_stdinc.h"
-#include "cglm/types.h"
 #include "engine/engine.h"
 #include "engine/entity.h"
 #include "engine/managers/asset_manager_2d.h"
 #include "engine/players/animation_player.h"
+#include "engine/renderer.h"
 #include "engine/scene.h"
 #include "game/game.h"
-#include "game/primitives/projectile_entity.h"
 #include "game/scenes/entities/player_entity.h"
 #include <SDL3/SDL.h>
 #include <cglm/cglm.h>
@@ -24,13 +22,9 @@
 void RenderTestEnemyEntity(Imzi_Engine_Ptr engine, Entity *entity,
                            double frame_time) {
   TestEnemyEntityData *entity_data = (TestEnemyEntityData *)entity->data;
-  SDL_SetRenderDrawColor(engine->ctx.renderer, 255, 0, 0, 255);
   Imzi_UpdateAnimationPlayer(&entity_data->animation_player, frame_time);
-  Imzi_AnimationPlayerRender(&engine->ctx, &engine->manager,
-                             &entity_data->animation_player,
+  Imzi_AnimationPlayerRender(&engine->renderer, &entity_data->animation_player,
                              entity_data->position);
-  SDL_RenderDebugTextFormat(engine->ctx.renderer, 10, 10, "FPS: %lf",
-                            1 / frame_time);
 }
 
 #define PIXELS_PER_METER 100.0
@@ -63,16 +57,16 @@ void UpdateTestEnemyEntity(Imzi_Engine_Ptr engine, Entity *entity,
 
 void SetupTestEnemyEntity(Imzi_Engine_Ptr engine, Entity *entity,
                           uint32_t target_id) {
-  int32_t still_animation_index = Imzi_AssetManager2DCreateAnimationFromPath(
-      &engine->ctx, &engine->manager, "assets/slime.png", SLIME_STANDING_NAME,
+  int32_t still_animation_index = Imzi_RendererCreateAnimationFromPath(
+      &engine->renderer, "assets/slime.png", SLIME_STANDING_NAME,
       &(SDL_FRect){0, 0, 64, 64}, 64, 64, 1, 1, false);
-  Imzi_AssetManager2DCreateAnimationFromPath(
-      &engine->ctx, &engine->manager, "assets/sprint_slime_sprint.png",
-      SLIME_SPRINT_NAME, &(SDL_FRect){0, 0, 64, 64}, 64, 64, 5, 0.1, true);
+  Imzi_RendererCreateAnimationFromPath(
+      &engine->renderer, "assets/sprint_slime_sprint.png", SLIME_SPRINT_NAME,
+      &(SDL_FRect){0, 0, 64, 64}, 64, 64, 5, 0.1, true);
 
-  Imzi_AssetManager2DCreateSpriteFromPath(
-      &engine->ctx, &engine->manager, "assets/prejectile.png",
-      SLIME_PROJECTILE_NAME, &(SDL_FRect){0, 0, 32, 32});
+  Imzi_RendererCreateSpriteFromPath(&engine->renderer, "assets/prejectile.png",
+                                    SLIME_PROJECTILE_NAME,
+                                    &(SDL_FRect){0, 0, 32, 32});
 
   TestEnemyEntityData *data = SDL_malloc(sizeof(TestEnemyEntityData));
   SDL_memset(data, 0, sizeof(TestEnemyEntityData));
@@ -83,7 +77,7 @@ void SetupTestEnemyEntity(Imzi_Engine_Ptr engine, Entity *entity,
   glm_vec2_zero(data->velocity);
 
   data->position[0] = 200;
-  data->position[1] = engine->ctx.height - 128;
+  data->position[1] = engine->renderer.ctx.height - 128;
 
   data->target = target_id;
 

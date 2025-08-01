@@ -1,7 +1,6 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#include "engine/engine.h"
 #include "engine/entity.h"
 #include <inttypes.h>
 #include <stdbool.h>
@@ -15,7 +14,8 @@ typedef struct {
 } Scene;
 
 Scene *SetupScene();
-bool Imzi_AddEntityToScene(Scene *scene, Entity entity);
+Entity *Imzi_AddEntityToScene(Scene *scene);
+Entity *Imzi_FindEntityInScene(Scene *scene, uint32_t entity_id);
 bool Imzi_RemoveEntityFromScene(Scene *scene, uint32_t entity_id);
 bool Imzi_RemoveMarkedEntitiesFromScene(Scene *scene);
 

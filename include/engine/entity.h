@@ -13,7 +13,6 @@ typedef struct Entity {
   void (*renderPtr)(Imzi_Engine_Ptr engine, Entity *data, double frame_time);
   int32_t render_layer;
   uint32_t id;
-  bool marked_for_delete; // ignore any component
 } Entity;
 
 #endif

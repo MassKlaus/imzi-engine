@@ -1,12 +1,10 @@
 #include "core/imzi.h"
+#include "SDL3/SDL_video.h"
 #include <SDL3_image/SDL_image.h>
 #include <game/scenes/test_scene.h>
 #include <stdlib.h>
 
-Imzi_Context_Ptr GlobalContext;
-
 void Imzi_Init(const char *title, int width, int height, Imzi_Context_Ptr ctx) {
-  GlobalContext = ctx;
   ctx->x = 0;
   ctx->y = 0;
   ctx->height = height;
@@ -20,20 +18,16 @@ void Imzi_Init(const char *title, int width, int height, Imzi_Context_Ptr ctx) {
     exit(1);
   }
 
-  const bool succeeded = SDL_CreateWindowAndRenderer(
-      title, ctx->width, ctx->height, SDL_WINDOW_BORDERLESS, &ctx->window,
-      &ctx->renderContext);
+  ctx->window = SDL_CreateWindow(title, ctx->width, ctx->height,
+                                 SDL_WINDOW_BORDERLESS | SDL_WINDOW_OPENGL);
 
-  if (!succeeded) {
+  if (!ctx->window) {
     SDL_Log("Window could not be created! SDL error: %s\n", SDL_GetError());
     exit(1);
   }
 }
 
 void Imzi_Deinit(Imzi_Context_Ptr ctx) {
-  if (ctx->renderContext)
-    SDL_DestroyRenderer(ctx->renderContext);
-
   if (ctx->window)
     SDL_DestroyWindow(ctx->window);
 }

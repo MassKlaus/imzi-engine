@@ -1,16 +1,22 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
+#include "SDL3/SDL_surface.h"
 #include "cglm/types.h"
 #include "core/imzi.h"
 #include "engine/managers/asset_manager_2d.h"
+#include "engine/visuals/sprite.h"
 #include <SDL3/SDL.h>
 #include <stdint.h>
 
 typedef struct {
   Imzi_Context ctx;
   AssetManager2D manager;
-  vec2 render_offset;
+  mat4 camera_matrix;
+  vec2 render_shift;
+  SDL_GLContext renderContext;
+  GLuint spriteShader;
+  GLuint animationShader;
 } Imzi_Renderer;
 
 typedef Imzi_Renderer *Imzi_Renderer_Ptr;
@@ -32,13 +38,22 @@ void Imzi_RendererDrawSprite(Imzi_Renderer_Ptr renderer, int32_t sprite_index,
 void Imzi_RendererDrawSpriteTo(Imzi_Renderer_Ptr renderer, int32_t sprite_index,
                                SDL_FRect *area);
 
-void Imzi_RendererDrawPartialSpriteSheet(Imzi_Renderer_Ptr renderer,
-                                         int32_t sprite_sheet, SDL_FRect *src,
-                                         SDL_FRect *dest);
+void Imzi_RendererDrawAnimationFrame(Imzi_Renderer_Ptr renderer,
+                                     int32_t animation_index, uint frame,
+                                     vec2 position, SDL_FlipMode mode);
 
-void Imzi_RendererDrawPartialSpriteSheetEx(Imzi_Renderer_Ptr renderer,
-                                           int32_t sprite_sheet, SDL_FRect *src,
-                                           SDL_FRect *dest, SDL_FlipMode flip);
+void Imzi_RendererDrawAnimationFrameTo(Imzi_Renderer_Ptr renderer,
+                                       int32_t animation_index, uint frame,
+                                       SDL_FRect *dest, SDL_FlipMode mode);
+
+void Imzi_RendererDrawStaticAnimationFrame(Imzi_Renderer_Ptr renderer,
+                                           int32_t animation_index, uint frame,
+                                           vec2 position, SDL_FlipMode mode);
+
+void Imzi_RendererDrawStaticAnimationFrameTo(Imzi_Renderer_Ptr renderer,
+                                             int32_t animation_index,
+                                             uint frame, SDL_FRect *dest,
+                                             SDL_FlipMode mode);
 
 // ====================== Shortcut to Handle AssetManager ===============
 

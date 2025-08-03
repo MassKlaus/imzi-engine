@@ -63,16 +63,16 @@ pub fn build(b: *std.Build) !void {
         .files = c_files.items,
         .flags = &[_][]const u8{ "-std=gnu11", "-Wall", "-Wextra", "-Werror", 
             // Sanitizers
-            "-fsanitize=address,undefined,leak",
-            "-fno-omit-frame-pointer",
-            "-fno-optimize-sibling-calls",
+            // "-fsanitize=address,undefined",
+            // "-fno-omit-frame-pointer",
+            // "-fno-optimize-sibling-calls",
         },
     });
 
-    main.sanitize_c = true;
-
-    main.linkSystemLibrary("asan", .{});      // AddressSanitizer
-    main.linkSystemLibrary("ubsan", .{});
+    // main.sanitize_c = true;
+    //
+    // main.linkSystemLibrary("asan", .{});      // AddressSanitizer
+    // main.linkSystemLibrary("ubsan", .{});
 
     main.addIncludePath(b.path("include"));
     main.addIncludePath(b.path("vendors/SDL3/include"));
@@ -128,6 +128,9 @@ pub fn build(b: *std.Build) !void {
     // This is not necessary, however, if the application depends on other installed
     // files, this ensures they will be present and in the expected location.
     run_cmd.step.dependOn(b.getInstallStep());
+
+     // Set ASAN_OPTIONS environment variable
+    // run_cmd.setEnvironmentVariable("LSAN_OPTIONS", "suppressions=asan_suppressions.txt");
 
     // This allows the user to pass arguments to the application in the build
     // command itself, like this: `zig build run -- arg1 arg2 etc`

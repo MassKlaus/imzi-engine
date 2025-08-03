@@ -4,7 +4,6 @@
 #include "cglm/types.h"
 #include "engine/engine.h"
 #include "engine/entity.h"
-#include "engine/managers/asset_manager_2d.h"
 #include "game/game.h"
 #include "game/primitives/projectile_entity.h"
 #include <SDL3/SDL.h>
@@ -20,12 +19,9 @@
 void RenderPlayerEntity(Imzi_Engine_Ptr engine, Entity *entity,
                         double frame_time) {
   PlayerEntityData *entity_data = (PlayerEntityData *)entity->data;
-  SDL_SetRenderDrawColor(engine->renderer.ctx.renderContext, 255, 0, 0, 255);
   Imzi_UpdateAnimationPlayer(&entity_data->animation_player, frame_time);
   Imzi_AnimationPlayerRender(&engine->renderer, &entity_data->animation_player,
                              entity_data->position);
-  SDL_RenderDebugTextFormat(engine->renderer.ctx.renderContext, 10, 10,
-                            "FPS: %lf", 1 / frame_time);
 }
 
 #define PIXELS_PER_METER 100.0
@@ -81,21 +77,21 @@ void UpdatePlayerEntity(Imzi_Engine_Ptr engine, Entity *entity,
   if (state[SDL_SCANCODE_RIGHT]) {
     // if (index != 0 && index != 6)
     // {
-    engine->renderer.render_offset[0] += SPEED * frame_time;
+    engine->renderer.render_shift[0] += SPEED * frame_time;
   } else if (state[SDL_SCANCODE_LEFT]) {
     // if (index != 0 && index != 6)
     // {
-    engine->renderer.render_offset[0] -= SPEED * frame_time;
+    engine->renderer.render_shift[0] -= SPEED * frame_time;
   }
 
   if (state[SDL_SCANCODE_UP]) {
     // if (index != 0 && index != 6)
     // {
-    engine->renderer.render_offset[1] -= SPEED * frame_time;
+    engine->renderer.render_shift[1] -= SPEED * frame_time;
   } else if (state[SDL_SCANCODE_DOWN]) {
     // if (index != 0 && index != 6)
     // {
-    engine->renderer.render_offset[1] += SPEED * frame_time;
+    engine->renderer.render_shift[1] += SPEED * frame_time;
   }
 
   entity_data->velocity[0] += entity_data->acceleration[0] * frame_time;
@@ -115,21 +111,22 @@ void UpdatePlayerEntity(Imzi_Engine_Ptr engine, Entity *entity,
   slime_center[0] = entity_data->position[0] + 32;
   slime_center[1] = entity_data->position[1] + 32;
 
-  float vertical_lag_range = 64;
+  float horizontal_lag_range = 64;
 
-  float camera_x =
-      engine->renderer.render_offset[0] + (engine->renderer.ctx.width / 2.0);
+  // Target camera position (where camera should be to center the slime)
+  float step = slime_center[0] - (engine->renderer.render_shift[0] +
+                                  (engine->renderer.ctx.width / 2.0));
 
-  float camera_to_slime = slime_center[0] - camera_x;
-
-  if (camera_to_slime > vertical_lag_range) {
-    engine->renderer.render_offset[0] += camera_to_slime - vertical_lag_range;
-  } else if (camera_to_slime < -vertical_lag_range) {
-    engine->renderer.render_offset[0] += camera_to_slime + vertical_lag_range;
+  // Only move if outside lag range
+  if (step > horizontal_lag_range) {
+    // Slime is too far right, move camera right
+    engine->renderer.render_shift[0] += step - horizontal_lag_range;
+  } else if (step < -horizontal_lag_range) {
+    // Slime is too far left, move camera left
+    engine->renderer.render_shift[0] += step + horizontal_lag_range;
   }
 
   if (state[SDL_SCANCODE_E]) {
-
     uint32_t projectile_sprite_index =
         Imzi_RendererGetSpriteByName(&engine->renderer, SLIME_PROJECTILE_NAME);
 
@@ -168,7 +165,7 @@ void SetupPlayerEntity(Imzi_Engine_Ptr engine, Entity *entity) {
   glm_vec2_zero(data->velocity);
 
   data->position[0] = 10;
-  data->position[1] = engine->renderer.ctx.height - 128;
+  data->position[1] = 0;
 
   entity->data = data;
   entity->render_layer = 1;

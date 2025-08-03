@@ -3,7 +3,6 @@
 #include "SDL3/SDL_stdinc.h"
 #include "engine/engine.h"
 #include "engine/entity.h"
-#include "engine/managers/asset_manager_2d.h"
 #include "engine/players/animation_player.h"
 #include "engine/renderer.h"
 #include "engine/scene.h"

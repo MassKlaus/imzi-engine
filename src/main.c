@@ -1,5 +1,6 @@
-#include "SDL3/SDL_render.h"
+#include "SDL3/SDL_init.h"
 #include "SDL3/SDL_stdinc.h"
+#include "SDL3/SDL_video.h"
 #include "engine/engine.h"
 #include "engine/scene.h"
 #include "game/game.h"
@@ -19,7 +20,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]) {
   engine->game_data = game;
   *appstate = engine;
 
-  SDL_SetRenderVSync(engine->renderer.ctx.renderContext, 1);
+  // SDL_GL_SetRenderVSync(engine->renderer.ctx.renderContext, 1);
   SetupTest1Scene(engine, &game->active_scene);
 
   return SDL_APP_CONTINUE;
@@ -49,19 +50,22 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
     return SDL_APP_SUCCESS;
   }
 
-  SDL_SetRenderDrawColorFloat(engine->renderer.ctx.renderContext, 0, 0, 0, 0);
-  SDL_RenderClear(engine->renderer.ctx.renderContext); /* code */
+  glClear(GL_COLOR_BUFFER_BIT);
 
   Imzi_UpdateScene(engine, &game->active_scene, frame_time);
   Imzi_RenderScene(engine, &game->active_scene, frame_time);
 
-  SDL_RenderPresent(engine->renderer.ctx.renderContext);
+  // SDL_RenderPresent(engine->renderer.ctx.renderContext);
+  SDL_GL_SwapWindow(engine->renderer.ctx.window);
 
   return SDL_APP_CONTINUE;
 }
 
 void SDL_AppQuit(void *appstate, SDL_AppResult result) {
   Imzi_Engine_Ptr engine = (Imzi_Engine_Ptr)appstate;
+  Game *game = (Game *)engine->game_data;
+
+  SDL_free(game);
   Imzi_DeinitEngine(engine);
 
   if (result == SDL_APP_FAILURE) {

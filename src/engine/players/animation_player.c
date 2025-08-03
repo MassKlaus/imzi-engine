@@ -38,15 +38,7 @@ void Imzi_StartAnimationPlayer(AnimationPlayer *player,
 
 void Imzi_AnimationPlayerRender(Imzi_Renderer_Ptr renderer,
                                 AnimationPlayer *player, vec2 position) {
-  Animation *animation = renderer->manager.animations + player->animation_index;
   int32_t frame = Imzi_GetCurrentAnimationFrame(renderer, player);
-
-  SDL_FRect src = {animation->area.x + animation->frame_w * frame,
-                   animation->area.y, animation->frame_w, animation->frame_h};
-  // SDL_FRect src = {0, 0, 64.0, 64.0};
-  SDL_FRect dest = {position[0], position[1], animation->area.w,
-                    animation->area.h};
-  // SDL_FRect dest = {0, 0, 64.0, 64.0};
 
   SDL_FlipMode flip = SDL_FLIP_NONE;
 
@@ -55,8 +47,8 @@ void Imzi_AnimationPlayerRender(Imzi_Renderer_Ptr renderer,
   if (player->v_flip)
     flip |= SDL_FLIP_VERTICAL;
 
-  Imzi_RendererDrawPartialSpriteSheetEx(renderer, animation->sprite_sheet_index,
-                                        &src, &dest, flip);
+  Imzi_RendererDrawAnimationFrame(renderer, player->animation_index, frame,
+                                  position, flip);
 }
 
 void Imzi_UpdateAnimationPlayer(AnimationPlayer *player, double delta_time) {

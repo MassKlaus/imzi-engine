@@ -3,11 +3,13 @@
 
 #include <SDL3/SDL.h>
 #include <cglm/cglm.h>
+#include <glad/glad.h>
 #include <inttypes.h>
 
 typedef struct {
   char name[64];
-  SDL_FRect area;
+  vec2 size;
+  GLuint vao;
   int32_t sprite_sheet_index;
 } Sprite;
 

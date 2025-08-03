@@ -7,7 +7,6 @@
 typedef struct Imzi_Context {
   // X, Y inside the window. This allow us to create mini rendering pockets.
   SDL_Window *window;
-  SDL_Renderer *renderContext;
   const char *title;
   int close_key; // If clicked, this will automatically close the window;
   int x, y, height, width;
